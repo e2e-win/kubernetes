@@ -18,16 +18,20 @@ package image
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+
+	yaml "gopkg.in/yaml.v2"
 )
 
-const (
-	dockerLibraryRegistry = "docker.io/library"
-	e2eRegistry           = "gcr.io/kubernetes-e2e-test-images"
-	gcRegistry            = "k8s.gcr.io"
-	PrivateRegistry       = "gcr.io/k8s-authenticated-test"
-	sampleRegistry        = "gcr.io/google-samples"
-)
-
+// some comment
+type Registry struct {
+	DockerLibraryRegistry string `yaml:"dockerLibraryRegistry"`
+	E2eRegistry           string `yaml:"e2eRegistry"`
+	GcRegistry            string `yaml:"gcRegistry"`
+	PrivateRegistry       string `yaml:"privateRegistry"`
+	SampleRegistry        string `yaml:"sampleRegistry"`
+}
 type ImageConfig struct {
 	registry string
 	name     string
@@ -46,7 +50,31 @@ func (i *ImageConfig) SetVersion(version string) {
 	i.version = version
 }
 
+func initReg() Registry {
+
+	fileContent, err := ioutil.ReadFile(os.Getenv("KUBE_TEST_REPO_LIST"))
+	if err != nil {
+		fmt.Print("Error reading file contents")
+		fmt.Print(err)
+	}
+
+	registry := Registry{}
+	err2 := yaml.Unmarshal(fileContent, &registry)
+	if err2 != nil {
+		fmt.Printf("Error unmarshalling yaml")
+		fmt.Print(err)
+	}
+	return registry
+}
+
 var (
+	registry              = initReg()
+	dockerLibraryRegistry = registry.DockerLibraryRegistry
+	e2eRegistry           = registry.E2eRegistry
+	gcRegistry            = registry.GcRegistry
+	PrivateRegistry       = registry.PrivateRegistry
+	sampleRegistry        = registry.SampleRegistry
+
 	AdmissionWebhook         = ImageConfig{e2eRegistry, "webhook", "1.12v2"}
 	APIServer                = ImageConfig{e2eRegistry, "sample-apiserver", "1.0"}
 	AppArmorLoader           = ImageConfig{e2eRegistry, "apparmor-loader", "1.0"}
