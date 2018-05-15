@@ -29,8 +29,11 @@ type Registry struct {
 	DockerLibraryRegistry string `yaml:"dockerLibraryRegistry"`
 	E2eRegistry           string `yaml:"e2eRegistry"`
 	GcRegistry            string `yaml:"gcRegistry"`
+	HazelcastRegistry     string `yaml:"hazelcastRegistry"`
 	PrivateRegistry       string `yaml:"privateRegistry"`
 	SampleRegistry        string `yaml:"sampleRegistry"`
+	StormRegistry         string `yaml:"stormRegistry"`
+	ZookeeperRegistry     string `yaml:"zookeeperRegistry"`
 }
 type ImageConfig struct {
 	registry string
@@ -72,13 +75,18 @@ var (
 	dockerLibraryRegistry = registry.DockerLibraryRegistry
 	e2eRegistry           = registry.E2eRegistry
 	gcRegistry            = registry.GcRegistry
+	hazelcastRegistry     = registry.HazelcastRegistry
 	PrivateRegistry       = registry.PrivateRegistry
 	sampleRegistry        = registry.SampleRegistry
+	stormRegistry         = registry.StormRegistry
+	zookeeperRegistry     = registry.ZookeeperRegistry
 
 	AdmissionWebhook         = ImageConfig{e2eRegistry, "webhook", "1.12v2"}
 	APIServer                = ImageConfig{e2eRegistry, "sample-apiserver", "1.0"}
 	AppArmorLoader           = ImageConfig{e2eRegistry, "apparmor-loader", "1.0"}
 	BusyBox                  = ImageConfig{dockerLibraryRegistry, "busybox", "1.29"}
+	Cassandra                = ImageConfig{sampleRegistry, "cassandra", "v13"}
+	CassandraE2ETest         = ImageConfig{e2eRegistry, "cassandra-e2e-test", "0.1"}
 	CheckMetadataConcealment = ImageConfig{e2eRegistry, "metadata-concealment", "1.0"}
 	CudaVectorAdd            = ImageConfig{e2eRegistry, "cuda-vector-add", "1.0"}
 	Dnsutils                 = ImageConfig{e2eRegistry, "dnsutils", "1.1"}
@@ -87,6 +95,7 @@ var (
 	Fakegitserver            = ImageConfig{e2eRegistry, "fakegitserver", "1.0"}
 	GBFrontend               = ImageConfig{sampleRegistry, "gb-frontend", "v6"}
 	GBRedisSlave             = ImageConfig{sampleRegistry, "gb-redisslave", "v3"}
+	Hazelcast                = ImageConfig{hazelcastRegistry, "hazelcast-kubernetes", "3.8_1"}
 	Hostexec                 = ImageConfig{e2eRegistry, "hostexec", "1.1"}
 	IpcUtils                 = ImageConfig{e2eRegistry, "ipc-utils", "1.0"}
 	Iperf                    = ImageConfig{e2eRegistry, "iperf", "1.0"}
@@ -112,12 +121,17 @@ var (
 	Redis               = ImageConfig{e2eRegistry, "redis", "1.0"}
 	ResourceConsumer    = ImageConfig{e2eRegistry, "resource-consumer", "1.3"}
 	ResourceController  = ImageConfig{e2eRegistry, "resource-consumer/controller", "1.0"}
+	Rethinkdb           = ImageConfig{gcRegistry, "rethinkdb", "1.16.0_1"}
 	ServeHostname       = ImageConfig{e2eRegistry, "serve-hostname", "1.1"}
+	Spark               = ImageConfig{gcRegistry, "spark", "1.5.2_v1"}
+	StormNimbus         = ImageConfig{stormRegistry, "storm-nimbus", "latest"}
+	StormWorker         = ImageConfig{stormRegistry, "storm-worker", "latest"}
 	TestWebserver       = ImageConfig{e2eRegistry, "test-webserver", "1.0"}
 	VolumeNFSServer     = ImageConfig{e2eRegistry, "volume/nfs", "1.0"}
 	VolumeISCSIServer   = ImageConfig{e2eRegistry, "volume/iscsi", "1.0"}
 	VolumeGlusterServer = ImageConfig{e2eRegistry, "volume/gluster", "1.0"}
 	VolumeRBDServer     = ImageConfig{e2eRegistry, "volume/rbd", "1.0"}
+	Zookeeper           = ImageConfig{zookeeperRegistry, "zookeeper", "latest"}
 )
 
 func GetE2EImage(image ImageConfig) string {
