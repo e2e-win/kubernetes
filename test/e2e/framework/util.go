@@ -471,7 +471,7 @@ func ProxyMode(f *Framework) (string, error) {
 			Namespace: f.Namespace.Name,
 		},
 		Spec: v1.PodSpec{
-			HostNetwork: true,
+			//HostNetwork: true,
 			Containers: []v1.Container{
 				{
 					Name:    "detector",
@@ -3364,7 +3364,7 @@ func NewHostExecPodSpec(ns, name string) *v1.Pod {
 					ImagePullPolicy: v1.PullIfNotPresent,
 				},
 			},
-			HostNetwork:                   true,
+			//HostNetwork:                   true,
 			SecurityContext:               &v1.PodSecurityContext{},
 			TerminationGracePeriodSeconds: &immediate,
 		},
