@@ -55,17 +55,25 @@ func (i *ImageConfig) SetVersion(version string) {
 
 func initReg() Registry {
 
-	fileContent, err := ioutil.ReadFile(os.Getenv("KUBE_TEST_REPO_LIST"))
-	if err != nil {
-		fmt.Print("Error reading file contents")
-		fmt.Print(err)
+	registry := Registry{
+		DockerLibraryRegistry: "docker.io/library",
+		E2eRegistry:           "gcr.io/kubernetes-e2e-test-images",
+		GcRegistry:            "k8s.gcr.io",
+		HazelcastRegistry:     "quay.io/pires",
+		PrivateRegistry:       "gcr.io/k8s-authenticated-test",
+		SampleRegistry:        "gcr.io/google-samples",
+		StormRegistry:         "mattf",
+		ZookeeperRegistry:     "mattf",
 	}
 
-	registry := Registry{}
-	err2 := yaml.Unmarshal(fileContent, &registry)
-	if err2 != nil {
-		fmt.Printf("Error unmarshalling yaml")
-		fmt.Print(err)
+	fileContent, err := ioutil.ReadFile(os.Getenv("KUBE_TEST_REPO_LIST"))
+	if err == nil {
+		registry = Registry{}
+		err2 := yaml.Unmarshal(fileContent, &registry)
+		if err2 != nil {
+			fmt.Printf("Error unmarshalling yaml")
+			fmt.Print(err)
+		}
 	}
 	return registry
 }
