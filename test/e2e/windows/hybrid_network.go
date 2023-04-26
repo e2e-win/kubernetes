@@ -101,6 +101,7 @@ var _ = SIGDescribe("Hybrid cluster network", func() {
 })
 
 var (
+	warmUpDuration = "30s"
 	duration       = "10s"
 	pollInterval   = "1s"
 	timeoutSeconds = 10
@@ -116,7 +117,7 @@ func assertConsistentConnectivity(f *framework.Framework, podName string, os str
 		}
 		return err
 	}
-	gomega.Eventually(connChecker, duration, pollInterval).ShouldNot(gomega.HaveOccurred())
+	gomega.Eventually(connChecker, warmUpDuration, pollInterval).ShouldNot(gomega.HaveOccurred())
 	gomega.Consistently(connChecker, duration, pollInterval).ShouldNot(gomega.HaveOccurred())
 }
 
