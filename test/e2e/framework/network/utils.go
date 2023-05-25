@@ -69,9 +69,6 @@ const (
 	hostTestPodName            = "host-test-container-pod"
 	nodePortServiceName        = "node-port-service"
 	sessionAffinityServiceName = "session-affinity-service"
-	// wait time between poll attempts of a Service vip and/or nodePort.
-	// coupled with testTries to produce a net timeout value.
-	hitEndpointRetryDelay = 2 * time.Second
 	// Number of retries to hit a given set of endpoints. Needs to be high
 	// because we verify iptables statistical rr loadbalancing.
 	testTries = 30
@@ -335,8 +332,6 @@ func (config *NetworkingTestConfig) DialFromContainer(ctx context.Context, proto
 			framework.Logf("reached %v after %v/%v tries", targetIP, i, maxTries)
 			return nil
 		}
-		// TODO: get rid of this delay #36281
-		time.Sleep(hitEndpointRetryDelay)
 	}
 	if dialCommand == echoHostname {
 		config.diagnoseMissingEndpoints(responses)
@@ -387,8 +382,6 @@ func (config *NetworkingTestConfig) GetEndpointsFromContainer(ctx context.Contex
 					eps.Insert(trimmed)
 				}
 			}
-			// TODO: get rid of this delay #36281
-			time.Sleep(hitEndpointRetryDelay)
 		}
 	}
 	return eps, nil
@@ -491,9 +484,6 @@ func (config *NetworkingTestConfig) DialFromNode(ctx context.Context, protocol, 
 		}
 
 		framework.Logf("Waiting for %+v endpoints (expected=%+v, actual=%+v)", expectedEps.Difference(eps).List(), expectedEps.List(), eps.List())
-
-		// TODO: get rid of this delay #36281
-		time.Sleep(hitEndpointRetryDelay)
 	}
 
 	config.diagnoseMissingEndpoints(eps)
