@@ -109,13 +109,13 @@ var _ = SIGDescribe("[Feature:Windows] [Excluded:WindowsDocker] [MinimumKubeletV
 		nginxPod = f.PodClient().CreateSync(nginxPod)
 
 		ginkgo.By("checking connectivity to 8.8.8.8 53 (google.com) from Linux")
-		assertConsistentConnectivity(f, nginxPod.ObjectMeta.Name, "linux", linuxCheck("8.8.8.8", 53))
+		assertConsistentConnectivity(f, nginxPod.ObjectMeta.Name, "linux", linuxCheck("8.8.8.8", 53), externalMaxTries)
 
 		ginkgo.By("checking connectivity to www.google.com from Windows")
-		assertConsistentConnectivity(f, agnPod.ObjectMeta.Name, "windows", windowsCheck("www.google.com"))
+		assertConsistentConnectivity(f, agnPod.ObjectMeta.Name, "windows", windowsCheck("www.google.com"), externalMaxTries)
 
 		ginkgo.By("checking connectivity from Linux to Windows for the first time")
-		assertConsistentConnectivity(f, nginxPod.ObjectMeta.Name, "linux", linuxCheck(agnPod.Status.PodIP, 80))
+		assertConsistentConnectivity(f, nginxPod.ObjectMeta.Name, "linux", linuxCheck(agnPod.Status.PodIP, 80), internalMaxTries)
 
 		initialRestartCount := podutil.GetExistingContainerStatus(agnPod.Status.ContainerStatuses, "windows-container").RestartCount
 
@@ -199,7 +199,7 @@ var _ = SIGDescribe("[Feature:Windows] [Excluded:WindowsDocker] [MinimumKubeletV
 		agnPodOut, err := f.ClientSet.CoreV1().Pods(f.Namespace.Name).Get(context.TODO(), agnPod.Name, metav1.GetOptions{})
 		framework.ExpectEqual(agnPodOut.Status.Phase, v1.PodRunning)
 		framework.ExpectNoError(err, "getting pod info after reboot")
-		assertConsistentConnectivity(f, nginxPod.ObjectMeta.Name, "linux", linuxCheck(agnPodOut.Status.PodIP, 80))
+		assertConsistentConnectivity(f, nginxPod.ObjectMeta.Name, "linux", linuxCheck(agnPodOut.Status.PodIP, 80), internalMaxTries)
 
 		// create another host process pod to check system boot time
 		checkPod := &v1.Pod{
