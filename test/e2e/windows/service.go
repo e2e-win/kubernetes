@@ -82,7 +82,7 @@ var _ = SIGDescribe("Services", func() {
 		framework.ExpectEqual(testPod.Spec.NodeSelector["kubernetes.io/os"], "windows")
 
 		ginkgo.By(fmt.Sprintf("checking connectivity Pod to curl http://%s:%d", nodeIP, nodePort))
-		assertConsistentConnectivity(ctx, f, testPod.ObjectMeta.Name, windowsOS, windowsCheck(fmt.Sprintf("http://%s", net.JoinHostPort(nodeIP, strconv.Itoa(nodePort)))))
+		assertConsistentConnectivity(ctx, f, testPod.ObjectMeta.Name, windowsOS, windowsCheck(fmt.Sprintf("http://%s", net.JoinHostPort(nodeIP, strconv.Itoa(nodePort)))), internalMaxTries)
 
 	})
 
